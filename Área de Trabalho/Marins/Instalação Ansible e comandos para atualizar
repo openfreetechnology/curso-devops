@@ -1,0 +1,57 @@
+Instalar pupet 
+#ansible-galaxy init puppet
+
+Comando para executar comandos pelo ansible e trazer o resultado 
+ansible -i hosts all -m command -a "uptime" -v
+
+Maquina virtual 1 (Servidor Ansible)
+
+instalar ansible
+apt-get install python python-pip
+pip install ansible
+
+//Este arquivo é para informar para ansible quais serão as maquinas(nodes) que estarão disponiveis para atualizações //
+
+criar arquivo hosts
+vi hosts
+##################################
+[dexter]
+192.168.200.104
+192.168.200.118
+
+#[centos]
+#192.168.1.122
+##################################
+
+
+//Este arquivo é para instalar os pacotes etc nos nodes configurados no arquivo hosts
+
+Criar arquivo playbook.yml
+
+vi playbook.yml
+
+####################################
+---
+- hosts: dexter
+  tasks:
+
+    - name: Instalação de pacotes
+      package:
+        name: htop
+        state: present
+
+- hosts: dexter
+  tasks:
+
+    - name: Instalação de pacotes
+      package:
+        name: epel-release
+        state: present
+
+
+
+####################################
+
+//executar comando para o ansible atualiar os ambientes a partir do playbook.yml
+root@ubuntu1:~# ansible-playbook -i hosts playbook.yml 
+

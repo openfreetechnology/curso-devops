@@ -1,0 +1,55 @@
+Instalar Puppet
+
+Criar o diretório de roles
+#mkdir puppet
+#ansible-galaxy init puppet
+
+https://puppet.com/docs/puppet/5.3/puppet_platform.html#apt-based-systems
+
+Configurar para o puppet pegar as playbooks
+
+#######################################
+#vim tasks/main.yml
+                      ---
+# tasks file for puppet
+- name: Instalação do Puppet
+  hosts: all
+  tasks:
+    - include: pre-requisitos.yml
+    - include: puppet_install.yml
+                                                        
+
+Criar o arquivo pre-requisito.yml
+https://puppet.com/docs/puppet/5.5/puppet_platform.html
+#######################################
+#vim pre-requisito.yml
+---
+- name: Configurando o diretório do Puppet para Ubuntu
+  get_url:
+     url: https://apt.puppetlabs.com/puppet5-release-wheezy.deb
+     dest: /tmp/puppet_.deb
+
+- name: Instalando o repositorio no Ubuntu
+  apt:
+    deb: /tmp/puppet.deb
+
+####################################                                            
+#vim puppet_install.yml
+                                                                  
+---
+- name: Instalando o puppet no Ubuntu
+  apt:
+    name: puppet-agent
+    state: present
+    update_cache: yes
+  when: ansible_distribution == "Debian"
+
+- name: Instala o repositorio do Puppet no CentOS
+  yum:
+    name: https://yum.puppet.com/puppet5/puppet5-release-el-7.noarch.rpm
+    state: present
+  when: ansible_distribution == "CentOS"
+                                                       
+~                                                                               
+~                                                                               
+~       
